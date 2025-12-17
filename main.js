@@ -1,6 +1,6 @@
 import { Tree } from "./classes.js";
 
-function randomOrderedArray(size = 15, max = 30) {
+function randomOrderedArray(size = 15, max = 20) {
   return Array.from({ length: size }, () => Math.floor(Math.random() * max));
 }
 
@@ -17,3 +17,5 @@ tree.insert(31);
 tree.print();
 console.log(tree.find(50));
 tree.print();
+console.log(tree.height(9));
+console.log(tree.depth(1));

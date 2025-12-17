@@ -61,6 +61,9 @@ export class Tree {
   }
   levelOrderForEach(callback) {
     if (root === null) return;
+    if (typeof callback != "function") {
+      throw new Error("No callback function provided");
+    }
     let q = [];
     q.push(this.root);
     let current = null;
@@ -72,8 +75,65 @@ export class Tree {
       q.shift();
     }
   }
+  preOrderForEach(callback, node = this.root) {
+    if (node === null) return;
+    if (typeof callback != "function") {
+      throw new Error("No callback function provided");
+    }
+    callback(node);
+    this.preOrderForEach(callback, node.left);
+    this.preOrderForEach(callback, node.right);
+  }
+  inOrderForEach(callback, node = this.root) {
+    if (node === null) return;
+    if (typeof callback != "function") {
+      throw new Error("No callback function provided");
+    }
+    this.inOrderForEach(callback, node.left);
+    callback(node);
+    this.inOrderForEach(callback, node.right);
+  }
+  postOrderForEach(callback, node = this.root) {
+    if (node === null) return;
+    if (typeof callback != "function") {
+      throw new Error("No callback function provided");
+    }
+    this.postOrderForEach(callback, node.left);
+    this.postOrderForEach(callback, node.right);
+    callback(node);
+  }
+  height(value) {
+    let node = this.find(value);
+    if (!node) return null;
+    return checkHeightFromNode(node);
+  }
+  depth(value) {
+    let node = this.find(value);
+    if (!node) return null;
+    return checkDepthFromRoot(node, this.root);
+  }
 }
 
+function checkHeightFromNode(node, height = 0, maxHeight = 0) {
+  if (height > maxHeight) maxHeight = height;
+  if (node.left !== null) {
+    maxHeight = checkHeightFromNode(node.left, height + 1, maxHeight);
+  }
+  if (node.right !== null) {
+    maxHeight = checkHeightFromNode(node.right, height + 1, maxHeight);
+  }
+  return maxHeight;
+}
+function checkDepthFromRoot(node, current, depth = 0) {
+  if (current === null) return null;
+  if (current == node) return depth;
+  if (node.data < current.data) {
+    depth = checkDepthFromRoot(node, current.left, depth + 1);
+  } else {
+    depth = checkDepthFromRoot(node, current.right, depth + 1);
+  }
+  return depth;
+}
 function buildTreeRecur(arr, start, end) {
   if (start > end) return null;
 
