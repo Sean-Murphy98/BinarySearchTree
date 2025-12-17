@@ -60,7 +60,7 @@ export class Tree {
     return ans;
   }
   levelOrderForEach(callback) {
-    if (root === null) return;
+    if (this.root === null) return;
     if (typeof callback != "function") {
       throw new Error("No callback function provided");
     }
@@ -71,7 +71,7 @@ export class Tree {
       current = q[0];
       if (current.left !== null) q.push(current.left);
       if (current.right !== null) q.push(current.right);
-      callback(q);
+      callback(q[0]);
       q.shift();
     }
   }
@@ -111,6 +111,40 @@ export class Tree {
     let node = this.find(value);
     if (!node) return null;
     return checkDepthFromRoot(node, this.root);
+  }
+  isBalanced() {
+    if (this.root === null) return true;
+    let q = [];
+    q.push(this.root);
+    let current = null;
+    while (q.length > 0) {
+      current = q[0];
+      if (current.left !== null && current.right !== null) {
+        if (
+          Math.abs(
+            checkHeightFromNode(current.left) -
+              checkHeightFromNode(current.right)
+          ) > 1
+        ) {
+          return false;
+        }
+        q.push(current.left);
+        q.push(current.right);
+      } else if (current.left !== null && checkHeightFromNode(current.left) > 1)
+        return false;
+      else if (current.right !== null && checkHeightFromNode(current.right))
+        return false;
+      q.shift();
+    }
+    return true;
+  }
+  rebalance() {
+    if (this.isBalanced()) {
+      return null;
+    }
+    const values = [];
+    this.inOrderForEach((node) => values.push(node.data));
+    this.root = this.buildTree(values);
   }
 }
 
